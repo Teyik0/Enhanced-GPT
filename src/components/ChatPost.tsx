@@ -1,11 +1,11 @@
-import React from 'react';
-
 interface ChatPostProps {
+  key: number;
   name: string;
-  message: string;
+  message: any;
+  uniqueId: string;
 }
 
-const ChatPost = ({ name, message }: ChatPostProps) => {
+const ChatPost = ({ name, message, uniqueId }: ChatPostProps) => {
   return (
     <div
       className={`w-full p-2 flex justify-center ${
@@ -19,7 +19,9 @@ const ChatPost = ({ name, message }: ChatPostProps) => {
         >
           {name}
         </div>
-        <div className='text-white w-11/12'>{message}</div>
+        <div className='text-white w-11/12' id={uniqueId}>
+          {message}
+        </div>
       </div>
     </div>
   );

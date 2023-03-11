@@ -1,16 +1,40 @@
+'use client';
+
+import { useState } from 'react';
 import { useStore } from '@/utils/store';
+import { signOut, useSession } from 'next-auth/react';
+import { Loader } from '@/components';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/utils';
 
 interface ButtonProps {
   name: string;
-  symbol: string;
+  icon: any;
   method?: string;
 }
 
-const Button = ({ name, symbol, method }: ButtonProps) => {
-  const { clearAllConversation } = useStore();
+const Button = ({ name, icon, method }: ButtonProps) => {
+  const [loading, setLoading] = useState(false);
+  const { data: session } = useSession();
+  const { setActiveChatId } = useStore();
+
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (method === 'clear') {
-      clearAllConversation();
+    e.preventDefault();
+    if (method === 'newchat') {
+      setLoading(true);
+      const doc = await addDoc(
+        collection(db, 'users', session?.user?.email!, 'chats'),
+        {
+          userId: session?.user?.email!,
+          createdAt: serverTimestamp(),
+          chatName: 'New chat',
+        }
+      );
+      setLoading(false);
+      setActiveChatId(doc.id);
+    } else if (method === 'logout') {
+      setLoading(true);
+      signOut();
     }
   };
   return (
@@ -19,7 +43,9 @@ const Button = ({ name, symbol, method }: ButtonProps) => {
         text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20 w-full h-fit'
       onClick={handleClick}
     >
-      <span>{symbol}</span> {name}
+      <>{icon}</>
+      <span className='mr-auto'>{name}</span>
+      {loading && <Loader size='little' />}
     </button>
   );
 };

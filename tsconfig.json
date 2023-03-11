@@ -15,6 +15,7 @@
     "jsx": "preserve",
     "incremental": true,
     "types": ["react/next"],
+    "strictNullChecks": true,
     "plugins": [
       {
         "name": "next"

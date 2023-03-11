@@ -1,23 +1,16 @@
 'use client';
-import { useStore } from '../utils/store';
+import { useStore } from '@/utils';
 
 const TextArea = () => {
-  const {
-    newQuestion,
-    setNewQuestion,
-    setNewAnswer,
-    setAllConversation,
-    allConversation,
-  } = useStore();
+  const { newQuestion, setNewQuestion } = useStore();
 
-  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let question = allConversation.map((item) => {
-      return item.name + ' : ' + item.message;
-    });
-    question.push('\nMe :' + newQuestion + '\n');
-    console.log(question.join(''));
-    if (!newQuestion) return;
+
+    if (newQuestion === '') return; //Si le champ est vide, on ne fait rien
+    // addMsgToConv('Me', newQuestion); //On ajoute la question de l'user à la conversation
+    setNewQuestion(''); //On vide le champ
+
     const resp = await fetch('/api', {
       method: 'POST',
       headers: {
@@ -25,17 +18,23 @@ const TextArea = () => {
       },
       body: JSON.stringify({ question: newQuestion }),
     });
-    const data = await resp.json();
-    setNewAnswer(data.choices[0].text);
-    setAllConversation();
-    setNewQuestion('');
+    try {
+      if (!resp.ok) throw new Error('Something went wrong');
+      const data = await resp.json();
+      console.log(data.answer.choices[0]);
+      // addMsgToConv('Bot', data.answer.choices[0].text);
+    } catch (error) {
+      console.log(error);
+      alert('Something went wrong');
+    }
   };
 
   return (
     <div className='w-full p-2 flex justify-center'>
-      <div
+      <form
         className='flex items-center border p-2 pl-4 border-gray-900/50 text-white
       bg-gray-700 rounded-md w-full md:w-[48rem]'
+        onSubmit={handleSubmit}
       >
         <textarea
           placeholder='Type a message...'
@@ -48,15 +47,15 @@ const TextArea = () => {
         <button
           className='rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:hover:text-gray-400 
         dark:hover:bg-gray-900 disabled:hover:bg-transparent'
-          onClick={handleClick}
+          type='submit'
         >
           <svg
             stroke='currentColor'
             fill='none'
-            stroke-width='2'
+            strokeWidth='2'
             viewBox='0 0 24 24'
-            stroke-linecap='round'
-            stroke-linejoin='round'
+            strokeLinecap='round'
+            strokeLinejoin='round'
             className='h-4 w-4 mr-1'
             height='1em'
             width='1em'
@@ -66,7 +65,7 @@ const TextArea = () => {
             <polygon points='22 2 15 22 11 13 2 9 22 2'></polygon>
           </svg>
         </button>
-      </div>
+      </form>
     </div>
   );
 };
