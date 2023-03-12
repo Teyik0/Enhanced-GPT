@@ -6,6 +6,9 @@ interface StoreState {
   setChatNumber: (chatNumber: number) => void;
   activeChatId: string;
   setActiveChatId: (chatId: string) => void;
+
+  models: any[];
+  setModels: (models: any[]) => void;
 }
 
 export const useStore = create<StoreState>()(
@@ -16,6 +19,9 @@ export const useStore = create<StoreState>()(
         setChatNumber: (chatNumber) => set(() => ({ chatNumber })),
         activeChatId: '',
         setActiveChatId: (chatId) => set(() => ({ activeChatId: chatId })),
+
+        models: [],
+        setModels: (models) => set(() => ({ models })),
       }),
       {
         name: 'bear-storage',

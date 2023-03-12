@@ -1,4 +1,3 @@
-import { typeText } from '@/utils';
 import { DocumentData } from 'firebase/firestore';
 
 interface ChatPostProps {
@@ -13,6 +12,7 @@ const ChatPost = ({ message, id }: ChatPostProps) => {
       className={`flex flex-col justify-center md:items-center px-2 ${
         user.name === 'ChatBot' && 'bg-gray-600/80'
       }`}
+      key={text[0] + id}
     >
       <div className='flex w-full lg:w-[46rem] py-4'>
         <div
@@ -26,11 +26,11 @@ const ChatPost = ({ message, id }: ChatPostProps) => {
             text.split('\n').map((line: string, index: number) => {
               if (line === '')
                 return (
-                  <>
+                  <div key={id + index + createdAt.toDate().toLocaleString()}>
                     <br />
-                  </>
+                  </div>
                 );
-              else return <p key={index}>{line}</p>;
+              else return <p key={line}>{line}</p>;
             })}
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { ArrowCircleLeftIcon, PlusCircleIcon } from '@heroicons/react/outline';
-import { Button, ChatId } from '@/components';
+import { Button, ChatId, ModelSelection } from '@/components';
 import { useSession } from 'next-auth/react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, orderBy, query } from 'firebase/firestore';
@@ -38,6 +38,7 @@ const SideBar = () => {
         icon={<ArrowCircleLeftIcon className='h-5 w-5 text-white' />}
         method='logout'
       />
+      <ModelSelection />
       <div className='mt-8'>
         {chats?.docs.map((chat, index) => {
           return <ChatId key={index} uniqueId={chat.id} />;

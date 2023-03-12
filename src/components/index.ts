@@ -6,6 +6,7 @@ import SessionProvider from './SessionProvider';
 import TextArea from './TextArea';
 import ChatId from './ChatId';
 import SideBar from './SideBar';
+import ModelSelection from './ModelSelection';
 
 export {
   Button,
@@ -16,4 +17,5 @@ export {
   TextArea,
   ChatId,
   SideBar,
+  ModelSelection,
 };

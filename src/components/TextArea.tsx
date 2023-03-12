@@ -78,8 +78,8 @@ const TextArea = () => {
     try {
       if (!resp.ok) throw new Error('Something went wrong');
       toast.success('AI responded!', { id: notification });
-      const data = await resp.json();
-      console.log(data.answer.split('\n'));
+      // const data = await resp.json();
+      // console.log(data.answer.split('\n'));
     } catch (error: any) {
       console.log(error);
       toast.error('Something went wrong', { id: notification });

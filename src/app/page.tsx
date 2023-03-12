@@ -40,17 +40,14 @@ export default function Home() {
             className='flex flex-col py-2 overflow-y-auto overflow-x-hidden'
             id='chat'
           >
-            {activeChatId ? (
-              messages?.docs.map((message) => (
+            {messages &&
+              messages.docs.map((message) => (
                 <ChatPost
-                  key={message.id}
                   message={message.data()}
                   id={message.id}
+                  key={message.id}
                 />
-              ))
-            ) : (
-              <div className='flex justify-center items-center h-full' />
-            )}
+              ))}
           </div>
           <TextArea />
         </main>
