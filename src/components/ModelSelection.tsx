@@ -1,7 +1,7 @@
 'use client';
 
 import { useStore } from '@/utils';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Select from 'react-select';
 
 const ModelSelection = () => {
