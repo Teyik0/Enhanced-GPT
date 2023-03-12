@@ -1,36 +1,90 @@
 'use client';
-import { useStore } from '@/utils';
+
+import { useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { Toaster } from 'react-hot-toast';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { db, useStore } from '@/utils';
+import { toast } from 'react-hot-toast';
+
+interface Message {
+  text: string;
+  createdAt: any;
+  user: {
+    _id: string;
+    name: string;
+  };
+}
 
 const TextArea = () => {
-  const { newQuestion, setNewQuestion } = useStore();
+  const [prompt, setPrompt] = useState('');
+  const { data: session } = useSession();
+  const { activeChatId } = useStore();
+  const [loading, setLoading] = useState(false);
+
+  const model = 'text-davinci-003';
+  const temperature = 0.9;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!prompt && loading) return;
+    setLoading(true);
 
-    if (newQuestion === '') return; //Si le champ est vide, on ne fait rien
-    // addMsgToConv('Me', newQuestion); //On ajoute la question de l'user à la conversation
-    setNewQuestion(''); //On vide le champ
+    const input = prompt.trim();
+    setPrompt('');
 
+    const message: Message = {
+      text: input,
+      createdAt: new Date(),
+      user: {
+        _id: session?.user?.email!,
+        name: session?.user?.name!,
+      },
+    };
+
+    await addDoc(
+      collection(
+        db,
+        'users',
+        session?.user?.email!,
+        'chats',
+        activeChatId,
+        'messages'
+      ),
+      message
+    );
+
+    //Toast notification
+    const notification = toast.loading('Wait for the AI to respond...');
+    //Sending the post request to the API
     const resp = await fetch('/api', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ question: newQuestion }),
+      body: JSON.stringify({
+        prompt: input,
+        chatId: activeChatId,
+        model,
+        temperature,
+        session,
+      }),
     });
     try {
       if (!resp.ok) throw new Error('Something went wrong');
+      toast.success('AI responded!', { id: notification });
       const data = await resp.json();
-      console.log(data.answer.choices[0]);
-      // addMsgToConv('Bot', data.answer.choices[0].text);
-    } catch (error) {
+      console.log(data.answer);
+    } catch (error: any) {
       console.log(error);
-      alert('Something went wrong');
+      toast.error('Something went wrong', { id: notification });
     }
+    setLoading(false);
   };
 
   return (
     <div className='w-full p-2 flex justify-center'>
+      <Toaster position='top-right' />
       <form
         className='flex items-center border p-2 pl-4 border-gray-900/50 text-white
       bg-gray-700 rounded-md w-full md:w-[48rem]'
@@ -38,8 +92,10 @@ const TextArea = () => {
       >
         <textarea
           placeholder='Type a message...'
-          value={newQuestion}
-          onChange={(e) => setNewQuestion(e.target.value)}
+          value={loading ? 'Wait before asking something else...' : prompt}
+          onChange={(e) => {
+            if (!loading) setPrompt(e.target.value);
+          }}
           rows={1}
           className='m-0 w-full resize-none border-0 bg-transparent p-0 pl-2 pr-7 
         focus:ring-0 focus-visible:ring-0 dark:bg-transparent md:pl-0'

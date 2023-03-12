@@ -19,21 +19,6 @@ interface ChatIdProps {
 const ChatId = ({ uniqueId }: ChatIdProps) => {
   const { data: session } = useSession();
   const { activeChatId, setActiveChatId } = useStore();
-
-  const [messages] = useCollection(
-    query(
-      collection(
-        db,
-        'users',
-        session?.user?.email!,
-        'chats',
-        uniqueId,
-        'messages'
-      ),
-      orderBy('createdAt', 'asc')
-    )
-  );
-
   const selectChat = () => {
     setActiveChatId(uniqueId);
   };
@@ -42,8 +27,10 @@ const ChatId = ({ uniqueId }: ChatIdProps) => {
     await deleteDoc(doc(db, 'users', session?.user?.email!, 'chats', uniqueId));
     if (uniqueId === activeChatId) {
       const q = query(collection(db, 'users', session?.user?.email!, 'chats'));
-      const querySnapshot = await getDocs(q);
-      setActiveChatId(querySnapshot.docs[0].id);
+      if (q) {
+        const querySnapshot = await getDocs(q);
+        setActiveChatId(querySnapshot.docs[0].id);
+      } else setActiveChatId('');
     } else setActiveChatId(activeChatId);
   };
 
