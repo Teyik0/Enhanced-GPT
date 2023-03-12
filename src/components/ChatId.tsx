@@ -1,16 +1,9 @@
 'use client';
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  orderBy,
-  query,
-} from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query } from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
-import { useCollection } from 'react-firebase-hooks/firestore';
 import { ChatIcon, TrashIcon, PencilAltIcon } from '@heroicons/react/outline';
 import { db, useStore } from '@/utils';
+import { toast } from 'react-hot-toast';
 
 interface ChatIdProps {
   uniqueId: string;
@@ -18,20 +11,26 @@ interface ChatIdProps {
 
 const ChatId = ({ uniqueId }: ChatIdProps) => {
   const { data: session } = useSession();
-  const { activeChatId, setActiveChatId } = useStore();
+  const { activeChatId, setActiveChatId, chatNumber } = useStore();
   const selectChat = () => {
     setActiveChatId(uniqueId);
   };
 
   const removeChat = async () => {
-    await deleteDoc(doc(db, 'users', session?.user?.email!, 'chats', uniqueId));
-    if (uniqueId === activeChatId) {
-      const q = query(collection(db, 'users', session?.user?.email!, 'chats'));
-      if (q) {
+    if (chatNumber > 1) {
+      await deleteDoc(
+        doc(db, 'users', session?.user?.email!, 'chats', uniqueId)
+      );
+      if (uniqueId === activeChatId) {
+        const q = query(
+          collection(db, 'users', session?.user?.email!, 'chats')
+        );
         const querySnapshot = await getDocs(q);
         setActiveChatId(querySnapshot.docs[0].id);
-      } else setActiveChatId('');
-    } else setActiveChatId(activeChatId);
+      } else setActiveChatId(activeChatId);
+    } else {
+      toast.error('You need at least one active chat !', { id: '' });
+    }
   };
 
   return (

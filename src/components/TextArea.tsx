@@ -19,7 +19,7 @@ interface Message {
 const TextArea = () => {
   const [prompt, setPrompt] = useState('');
   const { data: session } = useSession();
-  const { activeChatId } = useStore();
+  const { activeChatId, chatNumber } = useStore();
   const [loading, setLoading] = useState(false);
 
   const model = 'text-davinci-003';
@@ -27,7 +27,12 @@ const TextArea = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!prompt && loading) return;
+    if (!prompt) return;
+    if (loading) return;
+    if (chatNumber === 0) {
+      toast.error('You need to create a chat before chating !', { id: '' });
+      return;
+    }
     setLoading(true);
 
     const input = prompt.trim();
@@ -74,7 +79,7 @@ const TextArea = () => {
       if (!resp.ok) throw new Error('Something went wrong');
       toast.success('AI responded!', { id: notification });
       const data = await resp.json();
-      console.log(data.answer);
+      console.log(data.answer.split('\n'));
     } catch (error: any) {
       console.log(error);
       toast.error('Something went wrong', { id: notification });
@@ -87,7 +92,7 @@ const TextArea = () => {
       <Toaster position='top-right' />
       <form
         className='flex items-center border p-2 pl-4 border-gray-900/50 text-white
-      bg-gray-700 rounded-md w-full md:w-[48rem]'
+      bg-gray-700 rounded-md w-full md:w-[47rem]'
         onSubmit={handleSubmit}
       >
         <textarea

@@ -37,6 +37,7 @@ const Button = ({ name, icon, method }: ButtonProps) => {
       signOut();
     }
   };
+
   return (
     <button
       className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 

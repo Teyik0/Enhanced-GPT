@@ -1,14 +1,16 @@
-'use clients';
+'use client';
 
+import { useEffect } from 'react';
 import { ArrowCircleLeftIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import { Button, ChatId } from '@/components';
 import { useSession } from 'next-auth/react';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, orderBy, query } from 'firebase/firestore';
-import { db } from '@/utils';
+import { db, useStore } from '@/utils';
 
 const SideBar = () => {
   const { data: session } = useSession();
+  const { setChatNumber } = useStore();
   const [chats] = useCollection(
     session &&
       query(
@@ -16,6 +18,11 @@ const SideBar = () => {
         orderBy('createdAt', 'desc')
       )
   );
+
+  useEffect(() => {
+    if (chats) setChatNumber(chats!.docs.length);
+  }, [chats, setChatNumber]);
+
   return (
     <aside
       className='hidden md:absolute md:flex md:flex-col 
@@ -32,9 +39,9 @@ const SideBar = () => {
         method='logout'
       />
       <div className='mt-8'>
-        {chats?.docs.map((chat, index) => (
-          <ChatId key={index} uniqueId={chat.id} />
-        ))}
+        {chats?.docs.map((chat, index) => {
+          return <ChatId key={index} uniqueId={chat.id} />;
+        })}
       </div>
     </aside>
   );
