@@ -41,7 +41,7 @@ const SideBar = () => {
       <ModelSelection />
       <div className='mt-8'>
         {chats?.docs.map((chat, index) => {
-          return <ChatId key={index} uniqueId={chat.id} />;
+          return <ChatId key={index} uniqueId={chat.id} chat={chat} />;
         })}
       </div>
     </aside>

@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <main className='w-screen h-screen relative overflow-hidden'>
       <div className='flex md:flex-1 flex-col md:pl-[260px]'>
-        <main className='h-screen flex flex-col justify-between'>
+        <section className='h-screen flex flex-col justify-between bg-[#343441]'>
           <div
             className='flex flex-col py-2 overflow-y-auto overflow-x-hidden'
             id='chat'
@@ -50,7 +50,7 @@ export default function Home() {
               ))}
           </div>
           <TextArea />
-        </main>
+        </section>
 
         <SideBar />
       </div>

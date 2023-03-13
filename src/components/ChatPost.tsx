@@ -10,9 +10,8 @@ const ChatPost = ({ message, id }: ChatPostProps) => {
   return (
     <div
       className={`flex flex-col justify-center md:items-center px-2 ${
-        user.name === 'ChatBot' && 'bg-gray-600/80'
+        user.name === 'ChatBot' ? 'bg-[#454754]' : 'bg-[#343441]'
       }`}
-      key={text[0] + id}
     >
       <div className='flex w-full lg:w-[46rem] py-4'>
         <div

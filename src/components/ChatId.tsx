@@ -1,23 +1,72 @@
 'use client';
-import { collection, deleteDoc, doc, getDocs, query } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  DocumentData,
+  getDocs,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
 import { useSession } from 'next-auth/react';
 import { ChatIcon, TrashIcon, PencilAltIcon } from '@heroicons/react/outline';
 import { db, useStore } from '@/utils';
 import { toast } from 'react-hot-toast';
+import { useCollection } from 'react-firebase-hooks/firestore';
 
 interface ChatIdProps {
   uniqueId: string;
+  chat: DocumentData;
 }
 
-const ChatId = ({ uniqueId }: ChatIdProps) => {
+const ChatId = ({ uniqueId, chat }: ChatIdProps) => {
+  const [modifyChatName, setModifyChatName] = useState(false);
+  const [chatName, setChatName] = useState(chat.data().chatName);
   const { data: session } = useSession();
   const { activeChatId, setActiveChatId, chatNumber } = useStore();
   const selectChat = () => {
     setActiveChatId(uniqueId);
   };
+  const [messages] = useCollection(
+    session &&
+      query(
+        collection(
+          db,
+          'users',
+          session?.user?.email!,
+          'chats',
+          activeChatId,
+          'messages'
+        )
+      )
+  );
+
+  const modifyChatValue = async () => {
+    await updateDoc(
+      doc(db, 'users', session?.user?.email!, 'chats', uniqueId),
+      {
+        chatName: chatName,
+      }
+    );
+    setModifyChatName(false);
+  };
 
   const removeChat = async () => {
     if (chatNumber > 1) {
+      messages?.docs.forEach(async (message) => {
+        await deleteDoc(
+          doc(
+            db,
+            'users',
+            session?.user?.email!,
+            'chats',
+            uniqueId,
+            'messages',
+            message.id
+          )
+        );
+      });
       await deleteDoc(
         doc(db, 'users', session?.user?.email!, 'chats', uniqueId)
       );
@@ -42,9 +91,24 @@ const ChatId = ({ uniqueId }: ChatIdProps) => {
       onClick={() => selectChat()}
     >
       <ChatIcon className='h-5 w-5 text-white' />
-      <span className='mr-auto'>New chat</span>
+      {!modifyChatName ? (
+        <span className='mr-auto'>{chat.data().chatName}</span>
+      ) : (
+        <input
+          className='bg-transparent outline-none w-[120px] mr-auto rounded-sm px-2'
+          type='text'
+          value={chatName}
+          onChange={(e) => setChatName(e.target.value)}
+        />
+      )}
       <PencilAltIcon
-        onClick={() => console.log('edit')}
+        onClick={() => {
+          if (modifyChatName) {
+            modifyChatValue();
+          } else {
+            setModifyChatName(true);
+          }
+        }}
         className='h-5 w-5 text-white opacity-5 hover:opacity-60 duration-300 ease-in-out'
       />
       <TrashIcon
