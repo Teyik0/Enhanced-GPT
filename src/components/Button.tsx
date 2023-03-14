@@ -34,7 +34,7 @@ const Button = ({ name, icon, method }: ButtonProps) => {
       setActiveChatId(doc.id);
     } else if (method === 'logout') {
       setLoading(true);
-      signOut();
+      signOut({ callbackUrl: process.env.NEXTAUTH_URL as string });
     }
   };
 
