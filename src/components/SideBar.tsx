@@ -1,12 +1,12 @@
 'use client';
 
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
 import { ArrowCircleLeftIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import { Button, ChatId } from '@/components';
 import { useSession } from 'next-auth/react';
-// import { useCollection } from 'react-firebase-hooks/firestore';
-// import { collection, orderBy, query } from 'firebase/firestore';
-import { useStore } from '@/utils';
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { collection, orderBy, query } from 'firebase/firestore';
+import { db, useStore } from '@/utils';
 
 const SideBar = () => {
   const { data: session } = useSession();
@@ -14,17 +14,17 @@ const SideBar = () => {
     useStore();
 
   const optionStyle = `bg-[#262626] text-white`;
-  // const [chats] = useCollection(
-  //   session &&
-  //     query(
-  //       collection(db, 'users', session?.user?.email!, 'chats'),
-  //       orderBy('createdAt', 'desc')
-  //     )
-  // );
+  const [chats] = useCollection(
+    session &&
+      query(
+        collection(db, 'users', session?.user?.email!, 'chats'),
+        orderBy('createdAt', 'desc')
+      )
+  );
 
-  // useEffect(() => {
-  //   if (chats) setChatNumber(chats!.docs.length);
-  // }, [chats, setChatNumber]);
+  useEffect(() => {
+    if (chats) setChatNumber(chats!.docs.length);
+  }, [chats, setChatNumber]);
 
   return (
     <aside
@@ -72,11 +72,11 @@ const SideBar = () => {
         />
       </div>
 
-      {/* <div className='mt-8'>
+      <div className='mt-8'>
         {chats?.docs.map((chat, index) => {
           return <ChatId key={index} uniqueId={chat.id} chat={chat} />;
         })}
-      </div> */}
+      </div>
     </aside>
   );
 };
