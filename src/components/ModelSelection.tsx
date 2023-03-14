@@ -3,19 +3,25 @@
 import { useStore } from '@/utils';
 
 const ModelSelection = () => {
-  const { models, setModels } = useStore();
-  const fetchModels = async () => {
-    const response = await fetch('/api/engines', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const data = await response.json();
-    setModels(data);
-  };
+  const { setModel } = useStore();
 
-  return <div></div>;
+  const optionStyle = `bg-[#262626] text-white`;
+
+  return (
+    <select
+      className='flex bg-transparent py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 
+    text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20 w-full h-fit focus:outline-none'
+      name='Chat model'
+      id='model-selector'
+      onChange={(e) => setModel(e.target.value)}
+      defaultValue='text-davinci-003'
+    >
+      <option className={optionStyle}>text-davinci-003</option>
+      <option className={optionStyle}>gpt-3.5-turbo</option>
+      <option className={optionStyle}>code-davinci-002</option>
+      <option className={optionStyle}>text-davinci-002</option>
+    </select>
+  );
 };
 
 export default ModelSelection;

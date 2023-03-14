@@ -19,11 +19,8 @@ interface Message {
 const TextArea = () => {
   const [prompt, setPrompt] = useState('');
   const { data: session } = useSession();
-  const { activeChatId, chatNumber } = useStore();
+  const { activeChatId, chatNumber, model, temperature } = useStore();
   const [loading, setLoading] = useState(false);
-
-  const model = 'text-davinci-003';
-  const temperature = 0.9;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

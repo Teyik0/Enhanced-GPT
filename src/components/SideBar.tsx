@@ -10,7 +10,7 @@ import { db, useStore } from '@/utils';
 
 const SideBar = () => {
   const { data: session } = useSession();
-  const { setChatNumber } = useStore();
+  const { setChatNumber, temperature, setTemperature } = useStore();
   const [chats] = useCollection(
     session &&
       query(
@@ -39,6 +39,20 @@ const SideBar = () => {
         method='logout'
       />
       <ModelSelection />
+      <div
+        className='flex flex-col bg-transparent py-2 rounded-md hover:bg-gray-500/10 transition-colors duration-200 
+      text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20 w-full h-fit focus:outline-none px-4'
+      >
+        <h2>Temperature : {temperature}</h2>
+        <input
+          type='range'
+          min='0'
+          max='1'
+          step='0.1'
+          className='mt-2 cursor-pointer w-full'
+          onChange={(e) => setTemperature(parseFloat(e.target.value))}
+        />
+      </div>
       <div className='mt-8'>
         {chats?.docs.map((chat, index) => {
           return <ChatId key={index} uniqueId={chat.id} chat={chat} />;

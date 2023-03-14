@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     const resp = await openai
       .createCompletion({
         model: `${prompt.model}`,
-        prompt: `${prompt.prompt}`,
+        prompt: prompt.prompt,
         temperature: prompt.temperature,
         max_tokens: 1000,
       })
