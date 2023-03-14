@@ -1,15 +1,14 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection, doc, orderBy, query } from 'firebase/firestore';
-import { TextArea, SideBar, ChatPost } from '@/components';
-import { db, useStore } from '@/utils';
-import { useEffect } from 'react';
+// import { useSession } from 'next-auth/react';
+// import { useCollection } from 'react-firebase-hooks/firestore';
+// import { collection, doc, orderBy, query } from 'firebase/firestore';
+import { PromptInput, SideBar, ChatPost } from '@/components';
+// import { db, useStore } from '@/utils';
+// import { useEffect } from 'react';
 
 export default function Home() {
-  const { data: session } = useSession();
-  const { activeChatId } = useStore();
+  // const { activeChatId } = useStore();
   // const [messages] = useCollection(
   //   session &&
   //     query(
@@ -49,7 +48,7 @@ export default function Home() {
                 />
               ))} */}
           </div>
-          <TextArea />
+          {/* <PromptInput /> */}
         </section>
 
         <SideBar />

@@ -3,10 +3,9 @@ import ChatPost from './ChatPost';
 import Loader from './Loader';
 import Login from './Login';
 import SessionProvider from './SessionProvider';
-import TextArea from './TextArea';
+import PromptInput from './PromptInput';
 import ChatId from './ChatId';
 import SideBar from './SideBar';
-import ModelSelection from './ModelSelection';
 
 export {
   Button,
@@ -14,8 +13,7 @@ export {
   Loader,
   Login,
   SessionProvider,
-  TextArea,
+  PromptInput,
   ChatId,
   SideBar,
-  ModelSelection,
 };

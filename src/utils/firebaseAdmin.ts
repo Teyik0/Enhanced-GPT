@@ -3,7 +3,6 @@ import admin from 'firebase-admin';
 import { getApps as getAppsAdmin } from 'firebase-admin/app';
 
 // Initialize Firebase Admin
-// console.log(process.env.NEXT_PUBLIC_GOOGLE_CREDENTIAL as string);
 const serviceAccount = JSON.parse(
   process.env.NEXT_PUBLIC_GOOGLE_CREDENTIAL as string
 );

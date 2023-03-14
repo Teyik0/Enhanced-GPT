@@ -16,7 +16,7 @@ interface Message {
   };
 }
 
-const TextArea = () => {
+const PromptInput = () => {
   const [prompt, setPrompt] = useState('');
   const { data: session } = useSession();
   const { activeChatId, chatNumber, model, temperature } = useStore();
@@ -128,4 +128,4 @@ const TextArea = () => {
   );
 };
 
-export default TextArea;
+export default PromptInput;

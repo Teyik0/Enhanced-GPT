@@ -1,27 +1,30 @@
 'use client';
 
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { ArrowCircleLeftIcon, PlusCircleIcon } from '@heroicons/react/outline';
-import { Button, ChatId, ModelSelection } from '@/components';
+import { Button, ChatId } from '@/components';
 import { useSession } from 'next-auth/react';
-import { useCollection } from 'react-firebase-hooks/firestore';
-import { collection, orderBy, query } from 'firebase/firestore';
-import { db, useStore } from '@/utils';
+// import { useCollection } from 'react-firebase-hooks/firestore';
+// import { collection, orderBy, query } from 'firebase/firestore';
+import { useStore } from '@/utils';
 
 const SideBar = () => {
   const { data: session } = useSession();
-  const { setChatNumber, temperature, setTemperature } = useStore();
-  const [chats] = useCollection(
-    session &&
-      query(
-        collection(db, 'users', session?.user?.email!, 'chats'),
-        orderBy('createdAt', 'desc')
-      )
-  );
+  const { setModel, model, setChatNumber, temperature, setTemperature } =
+    useStore();
 
-  useEffect(() => {
-    if (chats) setChatNumber(chats!.docs.length);
-  }, [chats, setChatNumber]);
+  const optionStyle = `bg-[#262626] text-white`;
+  // const [chats] = useCollection(
+  //   session &&
+  //     query(
+  //       collection(db, 'users', session?.user?.email!, 'chats'),
+  //       orderBy('createdAt', 'desc')
+  //     )
+  // );
+
+  // useEffect(() => {
+  //   if (chats) setChatNumber(chats!.docs.length);
+  // }, [chats, setChatNumber]);
 
   return (
     <aside
@@ -38,12 +41,26 @@ const SideBar = () => {
         icon={<ArrowCircleLeftIcon className='h-5 w-5 text-white' />}
         method='logout'
       />
-      {/* <ModelSelection /> */}
-      {/* <div
+
+      <select
+        className='flex bg-transparent py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 
+      text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20 w-full h-fit focus:outline-none'
+        name='Chat model'
+        id='model-selector'
+        onChange={(e) => setModel(e.target.value)}
+        defaultValue={model}
+      >
+        <option className={optionStyle}>text-davinci-003</option>
+        <option className={optionStyle}>gpt-3.5-turbo</option>
+        <option className={optionStyle}>code-davinci-002</option>
+        <option className={optionStyle}>text-davinci-002</option>
+      </select>
+
+      <div
         className='flex flex-col bg-transparent py-2 rounded-md hover:bg-gray-500/10 transition-colors duration-200 
       text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20 w-full h-fit focus:outline-none px-4'
       >
-        <h2>Temperature : {temperature}</h2>
+        <h2 suppressHydrationWarning>Temperature : {temperature}</h2>
         <input
           type='range'
           min='0'
@@ -53,12 +70,13 @@ const SideBar = () => {
           onChange={(e) => setTemperature(parseFloat(e.target.value))}
           defaultValue={temperature}
         />
-      </div> */}
-      <div className='mt-8'>
+      </div>
+
+      {/* <div className='mt-8'>
         {chats?.docs.map((chat, index) => {
           return <ChatId key={index} uniqueId={chat.id} chat={chat} />;
         })}
-      </div>
+      </div> */}
     </aside>
   );
 };
