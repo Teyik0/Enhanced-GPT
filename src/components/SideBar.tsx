@@ -38,8 +38,8 @@ const SideBar = () => {
         icon={<ArrowCircleLeftIcon className='h-5 w-5 text-white' />}
         method='logout'
       />
-      <ModelSelection />
-      <div
+      {/* <ModelSelection /> */}
+      {/* <div
         className='flex flex-col bg-transparent py-2 rounded-md hover:bg-gray-500/10 transition-colors duration-200 
       text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20 w-full h-fit focus:outline-none px-4'
       >
@@ -51,8 +51,9 @@ const SideBar = () => {
           step='0.1'
           className='mt-2 cursor-pointer w-full'
           onChange={(e) => setTemperature(parseFloat(e.target.value))}
+          defaultValue={temperature}
         />
-      </div>
+      </div> */}
       <div className='mt-8'>
         {chats?.docs.map((chat, index) => {
           return <ChatId key={index} uniqueId={chat.id} chat={chat} />;

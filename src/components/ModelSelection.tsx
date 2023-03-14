@@ -3,7 +3,7 @@
 import { useStore } from '@/utils';
 
 const ModelSelection = () => {
-  const { setModel } = useStore();
+  const { setModel, model } = useStore();
 
   const optionStyle = `bg-[#262626] text-white`;
 
@@ -14,7 +14,7 @@ const ModelSelection = () => {
       name='Chat model'
       id='model-selector'
       onChange={(e) => setModel(e.target.value)}
-      defaultValue='text-davinci-003'
+      defaultValue={model}
     >
       <option className={optionStyle}>text-davinci-003</option>
       <option className={optionStyle}>gpt-3.5-turbo</option>
